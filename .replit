@@ -1,0 +1,2 @@
+language = "bash"
+run = "echo \"This program requires external data, and cannot be executed here\""
