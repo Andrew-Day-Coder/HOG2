@@ -23,7 +23,7 @@
 
 #include "vex.h"
 #include "DriveTrain.h"
-#include "ArcadeControl.h"
+#include "AggressiveArcadeControl.h"
 #include "Robot.h"
 #include "Claw.h"
 #include "PushForwardAutonomous.h"
@@ -46,6 +46,8 @@
       just please use the dialog.
 
   For the java-dev's on the teams:
+    The line `#pragma once` is added to many files.  This is for ensuring
+        that no file is included more than once.
     When a `*` character follow a Type (such as Lift Claw, vex::motor, etc) it means it stores the 
       memory location of an object, instead of storing the actual object.  This is the only kind of objects 
       storage, you will most commonly see in my classes. In c++, this variable or field is called a pointer.
@@ -152,7 +154,7 @@ void drivercontrol(void)
     return;
   }
   // define the control standard for the robot
-  robot->attachControlScheme(new ArcadeControl(mainController));
+  robot->attachControlScheme(new AggressiveArcadeControl(mainController));
   robot->getControlScheme()->setLiftSmoothing(false);
 
   // register callbacks
