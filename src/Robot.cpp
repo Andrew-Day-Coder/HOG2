@@ -1,4 +1,4 @@
-#include "robot.h"
+#include "Robot.h"
 #include <iostream>
 
 void Robot::attachControlScheme(ControlScheme* scheme)

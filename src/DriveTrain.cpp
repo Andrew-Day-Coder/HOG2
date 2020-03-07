@@ -2,6 +2,7 @@
 #include <vector>
 #include "vex.h"
 #include <cmath>
+#include "Helpers.h"
 #include "PID.h"
 
 DriveTrain::DriveTrain(void){}
@@ -59,16 +60,11 @@ void DriveTrain::addRightMotor(vex::motor* mtr)
     printf("[WARNING]: passed `mtr` as nullptr to DriveTrain::addRightMotor, could lead to SEGFAULT\n");
   }
 }
-void DriveTrain::clamp(int* value, int min, int max)
-{
-  *value = std::max(*value, min);
-  *value = std::min(*value, max);
-}
 void DriveTrain::powerBase(int leftPower, int rightPower)
 {
   // don't exceed +-100 for power
-  clamp(&leftPower, -100, 100);
-  clamp(&rightPower, -100, 100);
+  leftPower = Helpers::clamp(leftPower, -100, 100);
+  rightPower = Helpers::clamp(rightPower, -100, 100);
 
   for (vex::motor* mtr : leftMotors)
   {

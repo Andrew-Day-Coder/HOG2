@@ -9,9 +9,14 @@ enum class TARGET
   LOW_TOWER,
   MEDIUM_TOWER,
 };
+/**
+ * This is an abstraction of the robot's lift.  
+ * Protects the programmer from accidentally doing
+ * something undesireable with the lift
+ */
 class Lift
 {
-  private;
+  private:
     vex::motor* leftMotor;
     vex::motor* rightMotor;
     bool (*isAtBottom)(void);
@@ -21,7 +26,7 @@ class Lift
     bool isGoingToTarget;
     double targetLocation;
 
-    int userSpeed = 100;
+    int userSpeed = 50;
 
 
     const double maxEncoderValue = 120 * 5;
@@ -59,7 +64,36 @@ class Lift
      * @param rigth - the right motor 
      */
     Lift(vex::motor*, vex::motor*);
+    
+    /**
+     * This function returns true if the lift is ready to operate
+     * it will throw warnings if possible.  The boolean output
+     * should not be ignored, as ignoring it will allow
+     * for unsafe function calls on pointers.  Pass __PRETTY_FUNCTION__
+     * to the function, to trace where the error originated.
+     * this allows for the error to be traced to the source way
+     * more easily.
+     * 
+     * @returns true if the motors are non-null else false
+     */
+    bool isReady(const char* functionName);
 
+    /**
+     * Returns true if the motors on the 
+     * lift are spinning, else it returns 
+     * false.
+     * 
+     * @returns true if the lift is moving else false
+     */
+    bool isMoving();
+    /**
+     * Finds the bottom of the lift, by lowering
+     * until the lift stops moving.  This sets
+     * the zero point easily, and makes it so
+     * that hardware failures will not interfere
+     * with the lift's autotargeting ability.
+     */
+    void findBottomByImpact();
     /**
      * Associates a function that can tell when the lift
      * when it has reached the bottom.
@@ -71,6 +105,9 @@ class Lift
     void attachIsAtBottomFunction(bool (*bottomLimit)(void));
     /**
      * Function to be called on every tick of the lift for the lift
+     * 
+     * @deprecated because slamming into the bottom is the new strategy, instead
+     * of a calculated effort to find a zero-ing location.
      */
     void update();
     /**
@@ -90,13 +127,15 @@ class Lift
      * have a "bottoming" function associated with it
      */
     void findBottom();
+
     /**
      * Holds the lift where it is
      */
     void hold();
     /**
      * Makes the lift go up with whatever power is passed
-     * to the setPower funtion
+     * to the setPower funtion.
+     * 
      */
     void up();
     /**
@@ -118,12 +157,45 @@ class Lift
      */
     void resetTargetLocation();
     
+    /**
+     * Sets the robot to target a tower of enum type TARGET.  Doesn't work right now, not sure why, don't use
+     * 
+     * @param tower - the tower the to target.
+     */
     void setTargetLocation(TARGET);
+
+    /**
+     * Cancels the current targeting based off of encoder
+     */
     void cancelTarget();
+    /**
+     * Changes the target to one up from the current one
+     *
+     * @deprecated no longer needed with current control structure
+     */
     void upTarget();
+    /**
+     * Changes the target to one down from the current one
+     *
+     * @deprecated no longer needed with current control structure
+     */
     void downTarget();
+    /**
+     * Sets the speed used to raise and lower the lift
+     *
+     * @param value - the power in percent used to raise and lower the lift
+     */
     void setUserSpeed(int value) {userSpeed = value;}
+    /**
+     * Gets the speed used to raise and lower the lift
+     *
+     * @returns the power in percent used to raise and lower the lift
+     */
     int getUserSpeed() { return userSpeed; }
+    /**
+     * Gets an text-based representation of the current target as a string
+     * @returns A string representing the target of the lift
+     */
     std::string getTargetAsString();
 };
 

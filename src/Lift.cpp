@@ -3,15 +3,9 @@
 
 Lift::Lift(vex::motor* left, vex::motor* right)
 {
-  if (left == nullptr)
+  if (!isReady(__PRETTY_FUNCTION__))
   {
-    printf("[CRITICAL]: `leftMotor` is nullptr in Lift constructor (Lift::Lift)\n");
-    return;
-  }
-  if (right == nullptr)
-  {
-    printf("[CRITICAL]: `rightMotor` is nullptr in Lift constructor (Lift::lift)\n");
-    return;
+    printf("Hmm... invalid args passed to Lift constructor\n");
   }
   // basic lift setup in constructor
   
@@ -25,21 +19,20 @@ Lift::Lift(vex::motor* left, vex::motor* right)
   // assign a default speed
   userSpeed = 80;
 }
+
+
 void Lift::zero()
 {
-  if (rightMotor == nullptr)
+  /*
+    zeroes the encoders
+  */
+  if (isReady(__PRETTY_FUNCTION__))
   {
-    printf("[CRITICAL]: No registered right lift motor in Lift::zero\n");
-    return;
+    rightMotor->resetRotation();
+    leftMotor->resetRotation();
   }
-  if (leftMotor == nullptr)
-  {
-    printf("[CRITICAL]: No registered left lift motor in Lift::zero\n");
-    return;
-  }
-  rightMotor->resetRotation();
-  leftMotor->resetRotation();
 }
+
 
 void Lift::attachIsAtBottomFunction(bool (*bottomLimit)(void))
 {
@@ -53,6 +46,8 @@ void Lift::attachIsAtBottomFunction(bool (*bottomLimit)(void))
   }
   isAtBottom = bottomLimit;
 }
+
+
 void Lift::findBottom()
 {
   /* 
@@ -73,6 +68,8 @@ void Lift::findBottom()
     zero();
   }
 }
+
+
 void Lift::setTargetLocation(TARGET tower)
 {
   /* 
@@ -90,44 +87,39 @@ void Lift::setTargetLocation(TARGET tower)
   else if (tower == TARGET::LOW_TOWER)      setEncoderTargetPoint(1.25);
   else if (tower == TARGET::MEDIUM_TOWER)   setEncoderTargetPoint(1.5);
 }
+
+
 void Lift::setEncoderTargetPoint(double value)
 {
-  if (rightMotor == nullptr)
+  printf("setEncoderTargetPointCalled");
+  // make sure the motors are ready to go
+  if (isReady(__PRETTY_FUNCTION__))
   {
-    printf("[CRITICAL]: `rightMotor` is nullptr in setEncoderTargetPoint\n");
-    return;
+    value = Helpers::clamp(value, 0-liftTolerance, maxEncoderValue+liftTolerance);
+    release();
+    isGoingToTarget = true;
+
+    rightMotor->startRotateTo(value, vex::rotationUnits::deg, 50, vex::velocityUnits::pct);
+    leftMotor->startRotateTo(value, vex::rotationUnits::deg, 50, vex::velocityUnits::pct); 
   }
-  if (leftMotor == nullptr)
-  {
-    printf("[CRITICAL]: `leftMotor` is nullptr in setEncoderTargetPoint\n");
-    return;
-  }
-  Helpers::clamp(value, 0-liftTolerance, maxEncoderValue+liftTolerance);
-  isGoingToTarget = true;
-  rightMotor->startRotateTo(value, vex::rotationUnits::deg, 100, vex::velocityUnits::pct);
-  leftMotor->startRotateTo(value, vex::rotationUnits::deg, 100, vex::velocityUnits::pct); 
 }
+
+
 void Lift::setPower(int units)
 {
   /*
     Sets the power that the lift motors will use
   */
 
-  // null check the motors, don't want a SEGFAULT
-  if (rightMotor == nullptr)
+  if (isReady(__PRETTY_FUNCTION__))
   {
-    printf("[CRITICAL]: No registered right lift motor in Lift::setPower\n");
-    return;
+    cancelTarget();
+    leftMotor->spin(vex::directionType::fwd, units, vex::velocityUnits::pct);
+    rightMotor->spin(vex::directionType::fwd, units, vex::velocityUnits::pct);
   }
-  if (leftMotor == nullptr)
-  {
-    printf("[CRITICAL]: No registered left lift motor in Lift::setPower\n");
-    return;
-  }
-  cancelTarget();
-  leftMotor->spin(vex::directionType::fwd, units, vex::velocityUnits::pct);
-  rightMotor->spin(vex::directionType::fwd, units, vex::velocityUnits::pct);
 }
+
+
 void Lift::cancelTarget()
 {
   /*
@@ -139,6 +131,8 @@ void Lift::cancelTarget()
     release();
   }
 }
+
+
 void Lift::update()
 {
   /*
@@ -153,36 +147,37 @@ void Lift::update()
     }
   }
 }
+
+
 void Lift::up()
 {
   cancelTarget();
   setPower(getUserSpeed());
 }
+
+
 void Lift::down()
 {
   cancelTarget();
   setPower(-getUserSpeed());
 }
+
+
 void Lift::release()
 {
   /*
     stops the motors from targeting the predefined point
   */
   // ensure motors are not null  
-  if (rightMotor == nullptr)
-  {
-    printf("[CRITICAL]: No registered right lift motor in Lift::release\n");
-    return;
+  if (isReady(__PRETTY_FUNCTION__))
+    {
+    // stop motors
+    rightMotor->stop();
+    leftMotor->stop();
   }
-  if (leftMotor == nullptr)
-  {
-    printf("[CRITICAL]: No registered left lift motor in Lift::release\n");
-    return;
-  }
-  // stop motors
-  rightMotor->stop();
-  leftMotor->stop();
 }
+
+
 void Lift::upTarget()
 {
   /*
@@ -192,6 +187,8 @@ void Lift::upTarget()
   else if (target == TARGET::ALLIANCE_TOWER) setTargetLocation(TARGET::LOW_TOWER);
   else if (target == TARGET::LOW_TOWER)      setTargetLocation(target = TARGET::MEDIUM_TOWER);
 }
+
+
 void Lift::downTarget()
 {
   /*
@@ -203,6 +200,8 @@ void Lift::downTarget()
   else if (target == TARGET::LOW_TOWER)       setTargetLocation(TARGET::ALLIANCE_TOWER);
   else if (target == TARGET::MEDIUM_TOWER)    setTargetLocation(TARGET::LOW_TOWER);
 }
+
+
 std::string Lift::getTargetAsString()
 {
 
@@ -217,47 +216,100 @@ std::string Lift::getTargetAsString()
   if (target == TARGET::MEDIUM_TOWER) return "MEDIUM TOWER";
   return "";
 }
+
+
 void Lift::hold()
 {
 
   // hold the lift at a certain point
-  if (rightMotor == nullptr)
+  if (isReady(__PRETTY_FUNCTION__))
   {
-    printf("[CRITICAL]: No registered right lift motor in Lift::hold\n");
-    return;
+    leftMotor->stop(vex::brakeType::hold);
+    rightMotor->stop(vex::brakeType::hold);
   }
-  if (leftMotor == nullptr)
-  {
-    printf("[CRITICAL]: No registered left lift motor in Lift::hold\n");
-    return;
-  }
-  leftMotor->stop(vex::brakeType::hold);
-  rightMotor->stop(vex::brakeType::hold);
 }
+
+
 void Lift::smoothUp()
 {
   targetLocation += targetLocationIncrement;
   setEncoderTargetPoint(targetLocation);
 }
+
+
 void Lift::smoothDown()
 {
   targetLocation -= targetLocationIncrement;
   setEncoderTargetPoint(targetLocationIncrement);
 }
 
+
+
 void Lift::resetTargetLocation()
 {
-  if (rightMotor == nullptr)
-  {
-    printf("[CRITICAL]: No registered right lift motor in Lift::resetTargetLocation\n");
-    return;
+  if (isReady(__PRETTY_FUNCTION__)){
+    targetLocation = (leftMotor->position(vex::rotationUnits::rev) + rightMotor->position(vex::rotationUnits::rev)) / 2;
+    setEncoderTargetPoint(targetLocation);
   }
-  if (leftMotor == nullptr)
-  {
-    printf("[CRITICAL]: No registered left lift motor in Lift::resetTargetLocation\n");
-    return;
-  }
-  targetLocation = (leftMotor->position(vex::rotationUnits::rev) + rightMotor->position(vex::rotationUnits::rev)) / 2;
-  setEncoderTargetPoint(targetLocation);
 }
 
+
+void Lift::findBottomByImpact()
+{
+  // make the lift head towards the ground
+  setPower(-50);
+  // wait until the lift impacts the ground
+  while(isMoving()){};
+  // zero the lift motors
+  zero();
+  // cease active power to motors
+  release();
+}
+
+
+bool Lift::isMoving()
+{
+  if (isReady(__PRETTY_FUNCTION__))
+  {
+    return leftMotor->isSpinning() && rightMotor->isSpinning();
+  }
+  return false;
+}
+
+
+bool Lift::isReady(const char* functionName)
+{
+  // stores the states of the motors such that 
+  // as many errors as possible are captured
+  // at once.
+  bool isEitherMotorNull = false;
+
+  // null check the left motor
+  if (leftMotor == nullptr)
+  {
+    printf("[CRITICAL]: `left motor` is nullptr in %s\n", functionName);
+    isEitherMotorNull = true;
+  }
+  // null check the right motor
+  if (rightMotor == nullptr)
+  {
+    printf("[CRITICAL]: `right motor` is nullptr in %s\n", functionName);
+    isEitherMotorNull = true;
+  }
+  // return early if either motor is null, failed test
+  if (isEitherMotorNull)
+  {
+    return false;
+  }
+  // ensure both motors are installed
+  if (leftMotor->installed())
+  {
+    printf("[WARNING]: 'left motor' is not INSTALLED in %s\n", functionName);
+  }
+  if (rightMotor->installed())
+  {
+    printf("[WARNING]: 'right motor' is not INSTALLED in %s\n", functionName);
+  }
+  // all tests passed!!!
+  return true;
+}

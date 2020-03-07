@@ -100,6 +100,8 @@
     The code that is passed to the callback is often times either a method's name, or a lambda, which is a little block
       of code which is unnnamed and just runs basic expressions, they are very limited but they are must shorter then
       writing a method for each button press.  They look like [](){// code in here;}
+    Oh, and vex documentation can be found at https://api.vexcode.cloud/v5/html/annotated.html, or VEXCODE V5 TEXT > TOOLS > ADVANCED HELP
+    The variable __PRETTY_FUNCTION__ is replaced by the gcc preprocessor with the name of the signature of the function.
 */
 DriveTrain* driveTrain = new DriveTrain();
 Robot* robot;
@@ -143,6 +145,7 @@ void pre_auton(void)
   //configure the lift
   robot->getLift()->setUserSpeed(50);
   // to prevent the last two game malfunctions at Cape Qualifier 1st tournament, simply ***REMOVE** this line if the switch breaks
+  // this line will be removed soon
   robot->getLift()->attachIsAtBottomFunction(isLiftAtBottom);
 }
 void drivercontrol(void)

@@ -57,7 +57,9 @@ class Robot
      */
     Claw* getClaw() { return claw;}
     /**
-    * returns teh lcaw subsystem
+    * returns the control scheme
+    * @returns the control scheme
+    */
     ControlScheme* getControlScheme();
 };
 
