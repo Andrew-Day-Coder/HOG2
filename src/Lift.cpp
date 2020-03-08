@@ -1,5 +1,6 @@
 #include "Lift.h"
 #include "Helpers.h"
+#include "Logger.h"
 
 Lift::Lift(vex::motor* left, vex::motor* right)
 {
@@ -281,19 +282,26 @@ bool Lift::isReady(const char* functionName)
 {
   // stores the states of the motors such that 
   // as many errors as possible are captured
-  // at once.
+  // at once.  the reason the printfs are commented
+  // out is because I'm moving to a logging system as
+  // opposed to just spitting an error to the console
+  // this is so the errors can be logged to an sd card
+  // during the matches when communication with the main
+  // computer is not available.
   bool isEitherMotorNull = false;
 
   // null check the left motor
   if (leftMotor == nullptr)
   {
-    printf("[CRITICAL]: `left motor` is nullptr in %s\n", functionName);
+    //printf("[CRITICAL]: `left motor` is nullptr in %s\n", functionName);
+    Logger::log(ErrorLevel::CRITICAL, "`leftMotor` in lift is nullptr, called by\"%s\"", functionName);
     isEitherMotorNull = true;
   }
   // null check the right motor
   if (rightMotor == nullptr)
   {
-    printf("[CRITICAL]: `right motor` is nullptr in %s\n", functionName);
+    //printf("[CRITICAL]: `right motor` is nullptr in %s\n", functionName);
+    Logger::log(ErrorLevel::CRITICAL, "`rightMotor` in lift is nullptr, called by \"%s\"", functionName);
     isEitherMotorNull = true;
   }
   // return early if either motor is null, failed test
@@ -304,11 +312,13 @@ bool Lift::isReady(const char* functionName)
   // ensure both motors are installed
   if (leftMotor->installed())
   {
-    printf("[WARNING]: 'left motor' is not INSTALLED in %s\n", functionName);
+    //printf("[WARNING]: 'left motor' is not INSTALLED in %s\n", functionName);
+    Logger::log(ErrorLevel::WARNING, "`leftMotor` on the lift is not INSTALLED in \"%s\"", functionName);
   }
   if (rightMotor->installed())
   {
-    printf("[WARNING]: 'right motor' is not INSTALLED in %s\n", functionName);
+    //printf("[WARNING]: 'right motor' is not INSTALLED in %s\n", functionName);
+    Logger::log(ErrorLevel::WARNING, "`rightMotor` on the lift is not INSTALLED in \"%s\"", functionName);
   }
   // all tests passed!!!
   return true;

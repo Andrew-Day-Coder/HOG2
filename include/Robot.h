@@ -6,6 +6,9 @@
 #include "Lift.h"
 #include "Claw.h"
 
+/**
+ * the class that handles the subsystems for the robot
+ */
 class Robot
 {
   private:
@@ -40,8 +43,6 @@ class Robot
      * Sets up the controller, cannot be used
      * effectively, due to limitiations in the vex
      * api as will as c++.
-     *
-     * @deprecated
      */
     void setUpController(vex::controller*);
     /**
@@ -61,6 +62,37 @@ class Robot
     * @returns the control scheme
     */
     ControlScheme* getControlScheme();
+    
+    /**
+     * Ensures the subsystems for the robot are ready
+     *
+     * @param callerFunctionName the name of the function `__PRETTY_FUNCTION__` calling this funtion
+     *
+     * @returns true if the subsystems are ready for competition, else false
+     */
+    bool areSubsystemsReady(const char* callerFunctionName)
+    {
+      bool liftReady = false;
+      bool driveTrainReady = false;
+      bool clawReady = false;
+      
+      if (lift != nullptr)
+      {
+        if (lift->isReady(callerFunctionName))
+        {
+          liftReady = true;
+        }
+      }
+      if (driveTrain != nullptr)
+      {
+        driveTrainReady = true;
+      }
+      if (claw != nullptr)
+      {
+        clawReady = true;
+      }
+      return liftReady && driveTrainReady && clawReady;
+    }
 };
 
 #endif

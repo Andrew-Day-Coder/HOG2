@@ -3,6 +3,11 @@
 
 #include "math.h"
 
+/**
+ PID is short for porportional, integral, derivative, it is a control system used in precision machinery
+ to target certain goals that have quantifiable errors, such as keeping a drone level.  It is used here
+ to make targetable turns
+ */
 class PID{
   private:
     double Kp;

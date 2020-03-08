@@ -8,6 +8,10 @@ enum class TurningDirection
   RIGHT,
   LEFT,
 };
+
+/**
+ * A basic drivetrain class that abstracts away the control of the drivetrain
+ */
 class DriveTrain
 {
   private:
@@ -73,9 +77,9 @@ class DriveTrain
     /**
      * Turns the wheels a certain number of revolutions
      *
-     * @param revolutions - the number of revolutions to turn the wheel
+     * @param revs - the number of revolutions to turn the wheel
      */
-    void driveForwardRevs(double);
+    void driveForwardRevs(double revs);
     /**
      * Turns the wheels, such that they will move the robot a certain number
      * of inches forward, this uses PID to control how far the robot will move

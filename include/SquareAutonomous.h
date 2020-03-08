@@ -8,6 +8,9 @@
 #include "Claw.h"
 #include "Autonomous.h"
 
+/**
+ * Just drives the robot in a square shape, used to tune the robot
+ */
 class SquareAutonomous : public Autonomous
 {
   /* 
@@ -20,8 +23,20 @@ class SquareAutonomous : public Autonomous
     
     static double getError();
   public:
-    SquareAutonomous(vex::gyro*);
-    void control(DriveTrain*, Lift*, Claw*);
+    /**
+     * do all the setup neccessary to make the robot drive in a square
+     *
+     * @param turningSensor the sensor used to turn the robot
+     */
+    SquareAutonomous(vex::gyro* turningSensor);
+    /**
+     * Control the actual robot during autonomous
+     *
+     * @param driveTrain the drivetrain for the robot
+     * @param lift the lift of the robot
+     * @param claw the claw of the robot
+     */
+    void control(DriveTrain* driveTrain, Lift* lift, Claw* claw);
 };
 
 #endif

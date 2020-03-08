@@ -28,6 +28,7 @@
 #include "Claw.h"
 #include "PushForwardAutonomous.h"
 #include "SquareAutonomous.h"
+#include "Logger.h"
 
 /*
   JUST BECAUSE THIS TEXT IS HERE DOES NOT MEAN THAT I AM NOT COMING TO THE COMPETITION, I AM coming,
@@ -128,6 +129,10 @@ bool isLiftAtBottom(void)
 }
 void pre_auton(void)
 {
+
+  Logger::setLogLevel(ErrorLevel::WARNING);
+  Logger::setOutputFile(stdout);
+
   // keep below line as the first line in program execution except for robot-config
   robot = new Robot(new DriveTrain(), new Lift(&leftLiftMotor, &rightLiftMotor), new Claw(&leftClawMotor, &rightClawMotor));
   
@@ -226,7 +231,6 @@ int main() {
   // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit(); // ADD NO CODE ABOVE THIS LINE!!!!
   
-
   Competition.autonomous(auton);
   Competition.drivercontrol(drivercontrol);
 

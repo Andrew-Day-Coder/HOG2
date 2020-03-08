@@ -2,68 +2,75 @@
 
 Claw::Claw(vex::motor* leftMtr, vex::motor* rightMtr)
 {
-  if (leftMtr == nullptr)
-  {
-    printf("[CRITICAL]: `leftMtr` argument to Claw::Claw is nullptr\n");
-    return;
-  }
-  if (rightMtr == nullptr)
-  {
-    printf("[CRITICAL]: 'rightMtr' argument to Claw::Claw is nullptr\n");
-    return;
-  }
-
   leftMotor = leftMtr;
   rightMotor = rightMtr;
 
+  if (!isReady(__PRETTY_FUNCTION__))
+  {
+    printf("Oops, invalid args passed to Claw::Claw, probably a motor issue!\n");
+  }
   setOpeningPower(0);
   setSqueezePower(0);
   setOpeningDegrees(0);
 }
 void Claw::release()
 {
-  if (leftMotor == nullptr)
+  if (isReady(__PRETTY_FUNCTION__))
   {
-    printf("[ERROR]: `leftMotor` is nullptr in Claw::release\n");
-    return;
+    leftMotor->stop();
+    rightMotor->stop();
   }
-  if (rightMotor == nullptr)
-  {
-    printf("[ERROR]: `rightMotor` is nullptr in Claw::release\n");
-  }
-  leftMotor->stop();
-  rightMotor->stop();
 }
 void Claw::open()
 {
-  if (rightMotor == nullptr)
+  if (isReady(__PRETTY_FUNCTION__))
   {
-    printf("[ERROR]: `rightMotor` is nullptr in Claw::open\n");
-    return;
+    leftMotor->startRotateFor(getOpeningDegrees(), vex::rotationUnits::deg, getOpeningPower(), vex::velocityUnits::pct);
+    rightMotor->startRotateFor(getOpeningDegrees(), vex::rotationUnits::deg, getOpeningPower(), vex::velocityUnits::pct);
   }
-  if (leftMotor == nullptr)
-  {
-    printf("[ERROR]: `leftMotor` is nullptr in Claw::open\n");
-    return;
-  }
-  leftMotor->startRotateFor(getOpeningDegrees(), vex::rotationUnits::deg, getOpeningPower(), vex::velocityUnits::pct);
-  rightMotor->startRotateFor(getOpeningDegrees(), vex::rotationUnits::deg, getOpeningPower(), vex::velocityUnits::pct);
 }
 void Claw::squeeze()
 {
-  if (leftMotor == nullptr)
+  if (isReady(__PRETTY_FUNCTION__))
   {
-    printf("[ERROR]: `leftMotor` is nullptr in Claw::squeeze");
-    return;
+    leftMotor->spin(vex::directionType::rev, getSqueezePower(), vex::velocityUnits::pct);
+    rightMotor->spin(vex::directionType::rev, getSqueezePower(), vex::velocityUnits::pct);
   }
-  if (rightMotor == nullptr)
-  {
-    printf("[ERROR]: `rightMotor` is nullptr in Claw::squueze");
-  }
-  leftMotor->spin(vex::directionType::rev, getSqueezePower(), vex::velocityUnits::pct);
-  rightMotor->spin(vex::directionType::rev, getSqueezePower(), vex::velocityUnits::pct);
 }
 void Claw::update()
 {
 
+}
+
+bool Claw::isReady(const char* callerName)
+{
+  bool isLeftMotorReady = true;
+  bool isRightMotorReady = true;
+  
+  // check if the motors exist for the program
+  if (leftMotor != nullptr)
+  {
+    printf("[CRITICAL]: `left motor` for the claw is nullptr in %s\n", callerName);
+    isLeftMotorReady = false;
+  }
+  if (rightMotor != nullptr)
+  {
+    printf("[CRITICAL]: `right motor` for the claw is nullptr in %s\n", callerName);
+    isRightMotorReady = false;
+  }
+  // return early if either motor is uninstalled
+  if (!isLeftMotorReady || !isRightMotorReady)
+  {
+    return false;
+  }
+  // warn if any motors are uninstalled by cut wire, wrong port, broken port, etc.
+  if (!leftMotor->installed())
+  {
+    printf("[WARNING]: `left motor` for the claw is UNINSTALLED in %s\n", callerName);
+  }
+  if (!rightMotor->installed())
+  {
+    printf("[WARNING]: `right motor` for the claw is UNINSTALLED in %s\n", callerName);
+  }
+  return true;
 }

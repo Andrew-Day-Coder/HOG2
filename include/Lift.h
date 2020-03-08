@@ -61,7 +61,7 @@ class Lift
      * Creates a new lift
      * 
      * @param left - the left motor,
-     * @param rigth - the right motor 
+     * @param right - the right motor 
      */
     Lift(vex::motor*, vex::motor*);
     
@@ -100,14 +100,10 @@ class Lift
      *
      * @param bottomLimit - a function pointer to a function that can
      * tell the code when it is at the bottom of the lift.
-     * @deprecated
      */
     void attachIsAtBottomFunction(bool (*bottomLimit)(void));
     /**
      * Function to be called on every tick of the lift for the lift
-     * 
-     * @deprecated because slamming into the bottom is the new strategy, instead
-     * of a calculated effort to find a zero-ing location.
      */
     void update();
     /**
@@ -115,7 +111,6 @@ class Lift
      * can tell if it is at the bottom
      *
      * @returns true if lift can determine the bottom, else false
-     * @deprecated
      */
     bool hasBottomFunction() { return isAtBottom != nullptr; }
     /**
@@ -170,14 +165,10 @@ class Lift
     void cancelTarget();
     /**
      * Changes the target to one up from the current one
-     *
-     * @deprecated no longer needed with current control structure
      */
     void upTarget();
     /**
      * Changes the target to one down from the current one
-     *
-     * @deprecated no longer needed with current control structure
      */
     void downTarget();
     /**
