@@ -29,7 +29,18 @@ class Logger
      */
     static void setOutputFile(FILE* file)
     {
-      output = file;
+        if (file != stdout)
+        {
+            fprintf(file, "\n\n ---Switched to this file ---\n\n\n");
+        }
+        output = file;
+    }
+    /**
+     * Empties the log file
+     */
+    static void emptyLogFile()
+    {
+        output = freopen(NULL, "w", output);
     }
     /**
      * Limits the number of errors printed simply
@@ -53,27 +64,27 @@ class Logger
         Logger::log(ErrorLevel::INFO, "No output file specified, using stdout\n");
       }
 
-      // handle variatic arguemnts, taken from gcc definition of printf
+      // handle variatic arguments, taken from gcc definition of printf
       va_list arg;
       va_start(arg, msg);
 
       if (level == ErrorLevel::CRITICAL)
       {
         fputs("[CRITICAL]: ", output);
-        fprintf(output,msg, arg);
+        vfprintf(output,msg, arg);
       }
       else if (level == ErrorLevel::WARNING)
       {
         if (logLevel == ErrorLevel::INFO || logLevel == ErrorLevel::WARNING)
         {
           fputs("[WARNING]: ", output);
-          fprintf(output,msg, arg);
+          vfprintf(output,msg, arg);
         }
       }
       else if (logLevel == ErrorLevel::INFO && level == ErrorLevel::INFO)
       {
         fputs("[INFO]: ", output);
-        fprintf(output,msg, arg);
+        vfprintf(output,msg, arg);
       }
       va_end(arg);
     }
