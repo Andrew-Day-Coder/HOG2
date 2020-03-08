@@ -71,20 +71,20 @@ class Logger
       if (level == ErrorLevel::CRITICAL)
       {
         fputs("[CRITICAL]: ", output);
-        vfprintf(output,msg, arg);
+        vfprintf(output, msg, arg);
       }
       else if (level == ErrorLevel::WARNING)
       {
         if (logLevel == ErrorLevel::INFO || logLevel == ErrorLevel::WARNING)
         {
-          fputs("[WARNING]: ", output);
-          vfprintf(output,msg, arg);
+          fputs("[WARNING ]: ", output);
+          vfprintf(output, msg, arg);
         }
       }
       else if (logLevel == ErrorLevel::INFO && level == ErrorLevel::INFO)
       {
-        fputs("[INFO]: ", output);
-        vfprintf(output,msg, arg);
+        fputs("[  INFO  ]: ", output);
+        vfprintf(output, msg, arg);
       }
       va_end(arg);
     }

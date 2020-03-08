@@ -7,7 +7,11 @@
  */
 class RedSmallGoalAuton : public Autonomous
 {
-  private:
   public:
-    void control(DriveTrain*, Lift*, Claw*);
+    /**
+     * Control the actual robot during autonomous
+     *
+     * @param robot the robot this control method will be controlling
+     */
+    void control(Robot* robot);
 };

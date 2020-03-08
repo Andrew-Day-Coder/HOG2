@@ -30,14 +30,12 @@ class AggressiveArcadeControl : public DriverControl{
      * 
      * @param cont a pointer to the controller used to control the drivetrain
      */
-    AggressiveArcadeControl(vex::controller* cont);
+    AggressiveArcadeControl();
     /**
      * controls the subsystems
      * 
-     * @param driveTrain the drivetrain for the robot
-     * @param lift the lift for the robot
-     * @param claw the claw for the robot
+     * @param robot the robot to be controlled
      */
-    void control(DriveTrain* driveTrain, Lift* lift, Claw* claw);
+    void control(Robot* robot);
 
 };

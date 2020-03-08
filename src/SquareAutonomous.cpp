@@ -14,24 +14,22 @@ SquareAutonomous::SquareAutonomous(vex::gyro* turningSensor)
   turnSensor = turningSensor;
   targetTurnDegrees = 0;
 }
-void SquareAutonomous::control(DriveTrain* driveTrain, Lift* lift, Claw* claw)
+void SquareAutonomous::control(Robot* robot)
 {
-  if (checkErrors(driveTrain, lift, claw))
+  if (robot->areSubsystemsReady(__PRETTY_FUNCTION__))
   {
-    printf("[CRITICAL]: a nullptr was passed to SquareAutonomous::control");
-  }
-  if (turnSensor == nullptr)
-  {
-    printf("[Warning]: turnSensor is nullptr in SquareAutonomous::control, autonomous disabled\n");
-    return;
-  }
+    if (turnSensor == nullptr)
+    {
+      Logger::log(ErrorLevel::WARNING, "turnSensor is nullptr in %s, autonomous disabled\n", __PRETTY_FUNCTION__);
+      return;
+    }
 
-  targetTurnDegrees = 0;
-  for (int x = 0; x < 4; x++)
-  {
-    driveTrain->driveForwardInches(10);
-    targetTurnDegrees += 90;
-    driveTrain->pidTurn(TurningDirection::LEFT, SquareAutonomous::getError);
+    targetTurnDegrees = 0;
+    for (int x = 0; x < 4; x++)
+    {
+      robot->getDriveTrain()->driveForwardInches(10);
+      targetTurnDegrees += 90;
+      robot->getDriveTrain()->pidTurn(TurningDirection::LEFT, SquareAutonomous::getError);
+    }
   }
-
 }

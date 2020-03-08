@@ -9,10 +9,8 @@ class ArcadeControl : public DriverControl{
   public:
     /** 
      * Creates a new left-stick throttle, right stick turning, control system
-     * 
-     * @param cont - the controller to use for driving the robot
      */
-    ArcadeControl(vex::controller* cont);
+    ArcadeControl();
 
     /**
      * Override the control method declared in ControlScheme
@@ -22,7 +20,7 @@ class ArcadeControl : public DriverControl{
      * @param lift the lift of the robot
      * @param claw the claw of the robot
      */
-    void control(DriveTrain* driveTrain, Lift* lift, Claw* claw);
+    void control(Robot* robot);
 
 };
 

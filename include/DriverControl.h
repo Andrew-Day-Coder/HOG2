@@ -9,29 +9,17 @@
  */
 class DriverControl : public ControlScheme
 {
-  private:
-    vex::controller* cont;
-  protected:
-    /**
-     * gets the active controller used to control the robot
-     * 
-     * @returns the controller used to control the ControlScheme
-     */
-    vex::controller* getController()
-    {
-      return cont;
-    }
   public:
     /**
      * creates a new driver control
      * 
      * @param cont the controller to use for the drivetrain
      */
-    DriverControl(vex::controller* cont);
+    DriverControl();
     /**
      * manage the control of the subsystems, such as the lift and the claw
      */
-    void manageSubSystems(Lift* lift, Claw* claw);
+    void manageSubSystems(Robot* robot);
 
     /**
      * Be able to make a turn based off of pid

@@ -102,8 +102,28 @@
       of code which is unnnamed and just runs basic expressions, they are very limited but they are must shorter then
       writing a method for each button press.  They look like [](){// code in here;}
     Oh, and vex documentation can be found at https://api.vexcode.cloud/v5/html/annotated.html, or VEXCODE V5 TEXT > TOOLS > ADVANCED HELP
-    The variable __PRETTY_FUNCTION__ is replaced by the gcc preprocessor with the name of the signature of the function.
+    The variable __PRETTY_FUNCTION__ is replaced by the gcc preprocessor with the signature of the function.
 */
+/**
+ * \mainpage
+ *  This is the source code for Fryeburg Academy's "Heart of Gold II" robot or HOG2.  It is a very rough documentation of all the methods
+ * and their usage.
+ * 
+ * This code base is going to be used at the Maine VEX Robotics State Championship. It has some basic functionality that can be easily 
+ * generalized to other games.  
+ * <ul>
+ * <li> A Lift that can be used to precisely control many kinds of two motor DR4B, six bar, etc</li>
+ * <li> A Claw that can be used to precisely control many kinds of two motor claws</li>
+ * <li> A DriveTrain, which may be reinvented, I'm not sure, if the VEX API already has one, but it probably does,</li>
+ * <li> Four Autonomous Classes that make different autonomous's for different field locations.</li>
+ * <li> A Logger class that makes logging nearly as simple as printing</li>
+ * <li> A PID class that allows for precise movements, such as turning, without user intervention</li>
+ * <li> A limited Helpers class that contains methods that could be used in other years</li>
+ * <li> An experimental AggressiveArcadeControl class that could allow for center-point turns while at full throttle</li>
+ * <li> a Robot class that manages the subsystems, such as DriveTrain, Lift, and Claw, which could be generalized to other subsystems</li>
+ *</ul>
+ *
+ */
 DriveTrain* driveTrain = new DriveTrain();
 Robot* robot;
 vex::controller* mainController = new vex::controller();
@@ -134,36 +154,39 @@ void pre_auton(void)
   Logger::setOutputFile(stdout);
 
   // keep below line as the first line in program execution except for robot-config
-  robot = new Robot(new DriveTrain(), new Lift(&leftLiftMotor, &rightLiftMotor), new Claw(&leftClawMotor, &rightClawMotor));
+  robot = new Robot(mainController, new DriveTrain(), new Lift(&leftLiftMotor, &rightLiftMotor), new Claw(&leftClawMotor, &rightClawMotor));
   
-  //add all of the motors to the drivetrain
-  robot->getDriveTrain()->addLeftMotor(&leftBackMotor);
-  robot->getDriveTrain()->addLeftMotor(&leftFrontMotor);
-  robot->getDriveTrain()->addRightMotor(&rightBackMotor);
-  robot->getDriveTrain()->addRightMotor(&rightFrontMotor);
+  if (robot->areSubsystemsReady(__PRETTY_FUNCTION__))
+  {
+    //add all of the motors to the drivetrain
+    robot->getDriveTrain()->addLeftMotor(&leftBackMotor);
+    robot->getDriveTrain()->addLeftMotor(&leftFrontMotor);
+    robot->getDriveTrain()->addRightMotor(&rightBackMotor);
+    robot->getDriveTrain()->addRightMotor(&rightFrontMotor);
 
-  // define the claw
-  robot->getClaw()->setOpeningDegrees(225);
-  robot->getClaw()->setSqueezePower(50);
-  robot->getClaw()->setOpeningPower(100);
+    // define the claw
+    robot->getClaw()->setOpeningDegrees(225);
+    robot->getClaw()->setSqueezePower(50);
+    robot->getClaw()->setOpeningPower(100);
 
-  //configure the lift
-  robot->getLift()->setUserSpeed(50);
-  // to prevent the last two game malfunctions at Cape Qualifier 1st tournament, simply ***REMOVE** this line if the switch breaks
-  // this line will be removed soon
-  robot->getLift()->attachIsAtBottomFunction(isLiftAtBottom);
+    //configure the lift
+    robot->getLift()->setUserSpeed(50);
+    // to prevent the last two game malfunctions at Cape Qualifier 1st tournament, simply ***REMOVE** this line if the switch breaks
+    // this line will be removed soon
+    robot->getLift()->attachIsAtBottomFunction(isLiftAtBottom);
+  }
 }
 void drivercontrol(void)
 {
   // ensure null pointer error's don't happen
   if (robot == nullptr)
   {
-    printf("[CRITICAL]: drivercontrol has malfunctioned, `robot` is nullptr, in main.cpp!drivercontrol, exiting");
+    //printf("[CRITICAL]: drivercontrol has malfunctioned, `robot` is nullptr, in main.cpp!drivercontrol, exiting");
+    Logger::log(ErrorLevel::CRITICAL, "driver control has malfunctioned, `robot` is nullptr, in %s, exiting", __PRETTY_FUNCTION__);
     return;
   }
   // define the control standard for the robot
-  robot->attachControlScheme(new AggressiveArcadeControl(mainController));
-  robot->getControlScheme()->setLiftSmoothing(false);
+  robot->attachControlScheme(new AggressiveArcadeControl());
 
   // register callbacks
   controllerConfig();
@@ -191,40 +214,26 @@ void controllerConfig(void)
   /*
     This method sets the `instant` callbacks, callbacks that interupt program flow
     If you don't see what your looking for here go into DriverControl.cpp
-  */ 
-  if (mainController == nullptr)
-  {
-    printf("[CRITCIAL]: the main controller is `nullptr` robotic controls are disabled!!!\n");
-    return;
-  }
+  */
   if (robot == nullptr)
   {
     printf("[CRITICAL]: `robot` is nullptr in main.cpp!controllerConfig, aborted config, robot uncontrollable");
   }
-  if (robot->getLift() == nullptr)
-  {
-    printf("[CRITICAL]: robot->getLift() returns `nullptr` in main.cpp!controllerConfig, aborted config, robot uncontrollable");
-    return;
-  }
-  if (robot->getClaw() == nullptr)
-  {
-    printf("[CRITICAL]: robot->getClaw() returns `nullptr` in main.cpp!controllerConfig, aborted config, robot uncontrollable");
-    return;
-  }
-  // register all of the callbacks for the robot
-  // register the claw callbacks
-  mainController->ButtonA.pressed([](){robot->getClaw()->open();});
-  mainController->ButtonB.pressed([](){robot->getClaw()->release();});
-  mainController->ButtonX.pressed([](){robot->getClaw()->squeeze();});
 
-  // register the lift callbacks
-  mainController->ButtonUp.pressed([](){robot->getLift()->setTargetLocation(TARGET::LOW_TOWER);});
-  mainController->ButtonLeft.pressed([](){robot->getLift()->setTargetLocation(TARGET::MEDIUM_TOWER);});
-  mainController->ButtonDown.pressed([](){robot->getLift()->setTargetLocation(TARGET::BOTTOM);});
-  mainController->ButtonRight.pressed([](){robot->getLift()->setTargetLocation(TARGET::ALLIANCE_TOWER);});
+  if (robot->areSubsystemsReady(__PRETTY_FUNCTION__))
+  {
+    // register all of the callbacks for the robot
+    // register the claw callbacks
+    robot->getController()->ButtonA.pressed([](){robot->getClaw()->open();});
+    robot->getController()->ButtonB.pressed([](){robot->getClaw()->release();});
+    robot->getController()->ButtonX.pressed([](){robot->getClaw()->squeeze();});
 
-  // if the simple control system must be used then remove this line
-  mainController->ButtonR1.pressed([](){robot->getLift()->resetTargetLocation();});
+    // register the lift callbacks
+    robot->getController()->ButtonUp.pressed([](){robot->getLift()->setTargetLocation(TARGET::LOW_TOWER);});
+    robot->getController()->ButtonLeft.pressed([](){robot->getLift()->setTargetLocation(TARGET::MEDIUM_TOWER);});
+    robot->getController()->ButtonDown.pressed([](){robot->getLift()->setTargetLocation(TARGET::BOTTOM);});
+    robot->getController()->ButtonRight.pressed([](){robot->getLift()->setTargetLocation(TARGET::ALLIANCE_TOWER);});
+  }
 }
 
 int main() {

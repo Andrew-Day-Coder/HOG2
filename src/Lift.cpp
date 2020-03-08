@@ -4,18 +4,21 @@
 
 Lift::Lift(vex::motor* left, vex::motor* right)
 {
+  // assign left and right motors
+  leftMotor = left;
+  rightMotor = right;
+
   if (!isReady(__PRETTY_FUNCTION__))
   {
-    printf("Hmm... invalid args passed to Lift constructor\n");
+    Logger::log(ErrorLevel::INFO, "Invalid args passed to Lift constructor, the motors are not really ready");
+    leftMotor = nullptr;
+    rightMotor = nullptr;
   }
   // basic lift setup in constructor
   
   // always assign to pointer, prevent undefined behavior
   isAtBottom = nullptr;
   
-  // assign left and right motors
-  leftMotor = left;
-  rightMotor = right;
 
   // assign a default speed
   userSpeed = 80;
@@ -293,14 +296,12 @@ bool Lift::isReady(const char* functionName)
   // null check the left motor
   if (leftMotor == nullptr)
   {
-    //printf("[CRITICAL]: `left motor` is nullptr in %s\n", functionName);
     Logger::log(ErrorLevel::CRITICAL, "`leftMotor` in lift is nullptr, called by\"%s\"", functionName);
     isEitherMotorNull = true;
   }
   // null check the right motor
   if (rightMotor == nullptr)
   {
-    //printf("[CRITICAL]: `right motor` is nullptr in %s\n", functionName);
     Logger::log(ErrorLevel::CRITICAL, "`rightMotor` in lift is nullptr, called by \"%s\"", functionName);
     isEitherMotorNull = true;
   }
@@ -312,12 +313,10 @@ bool Lift::isReady(const char* functionName)
   // ensure both motors are installed
   if (leftMotor->installed())
   {
-    //printf("[WARNING]: 'left motor' is not INSTALLED in %s\n", functionName);
     Logger::log(ErrorLevel::WARNING, "`leftMotor` on the lift is not INSTALLED in \"%s\"", functionName);
   }
   if (rightMotor->installed())
   {
-    //printf("[WARNING]: 'right motor' is not INSTALLED in %s\n", functionName);
     Logger::log(ErrorLevel::WARNING, "`rightMotor` on the lift is not INSTALLED in \"%s\"", functionName);
   }
   // all tests passed!!!

@@ -1,55 +1,35 @@
 #include "DriverControl.h"
+#include "Logger.h"
 #include "vex.h"
 
-DriverControl::DriverControl(vex::controller* cont)
+DriverControl::DriverControl()
 {
-  this->cont = cont;
 }
-void DriverControl::manageSubSystems(Lift* lift, Claw* claw)
+void DriverControl::manageSubSystems(Robot* robot)
 {
-  // do the nullchecks
-  if (lift == nullptr)
+  if (robot->areSubsystemsReady(__PRETTY_FUNCTION__))
   {
-    printf("[CRITICAL]: lift is nullptr, in DriverControl::manageSubSystems\n");
-    return;
-  }
-  if (claw == nullptr)
-  {
-    printf("[CRITICAL]: claw is nullptr, in DriverControl::manageSubSystems\n");
-  }
-  if (getController() == nullptr)
-  {
-    printf("[CRITICAL]: controller is nullptr, in DriverControl::manageSubSystems\n");
-  }
-  // manage the manual control of the lift
-  if (getController()->ButtonR1.pressing())
-  {
-    if (isLiftSmoothingEnabled())
+    // manage the manual control of the lift
+    if (robot->getController()->ButtonR1.pressing())
     {
-      lift->smoothUp();
-    } else
-    {
-      lift->up();
+        robot->getLift()->up();
     }
-  } else if (getController()->ButtonR2.pressing())
-  {
-    if (isLiftSmoothingEnabled())
+    else if (robot->getController()->ButtonR2.pressing())
     {
-      lift->smoothDown();
-    } else
-    {
-      lift->down();
+        robot->getLift()->down();
     }
-  }
-  else
-  {
-    lift->hold();
-  }
-  lift->update();
+    else
+    {
+      // hold the lift in place if no buttons are held
+      robot->getLift()->hold();
+    }
+    // update the lift
+    robot->getLift()->update();
 
-  // manage the manual control of the claw
-  if (getController()->ButtonA.pressing())
-  {
-    claw->squeeze();
+    // manage the manual control of the claw
+    if (robot->getController()->ButtonA.pressing())
+    {
+      robot->getClaw()->squeeze();
+    }
   }
 }

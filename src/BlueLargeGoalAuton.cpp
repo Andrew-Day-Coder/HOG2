@@ -1,12 +1,10 @@
 #include "BlueLargeGoalAuton.h"
 
-void BlueLargeGoalAuton::control(DriveTrain* driveTrain, Lift* lift, Claw* claw)
+void BlueLargeGoalAuton::control(Robot* robot)
 {
-  if (checkErrors(driveTrain, lift, claw))
+  if (robot->areSubsystemsReady(__PRETTY_FUNCTION__))
   {
-    printf("Oops, something went wrong in BlueLargeGoalAuton::control\n");
+     // code here
     return;
   }
-
-  // code here
 }

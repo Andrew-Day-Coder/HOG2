@@ -1,10 +1,13 @@
-#ifndef ROBOT_H
-#define ROBOT_H
+#pragma once
 
 #include "DriveTrain.h"
 #include "ControlScheme.h"
 #include "Lift.h"
 #include "Claw.h"
+#include "vex.h"
+
+// circular reference to ControlScheme so this needs to be declared
+class ControlScheme;
 
 /**
  * the class that handles the subsystems for the robot
@@ -16,17 +19,13 @@ class Robot
     DriveTrain* driveTrain;
     ControlScheme* controlScheme;
     Claw* claw;
+
+    vex::controller* robotController;
   public:
     /**
      * Creates a new robot with a drivetrain, lift, and claw
      */
-    Robot(DriveTrain* driveTrain, Lift* lift, Claw* claw);
-    /**
-     * Gets the drivetrain object from the robot
-     * @returns the instance of drivetrain that the robot
-     * owns and controls.
-     */
-    DriveTrain* getDriveTrain();
+    Robot(vex::controller* robotController, DriveTrain* driveTrain, Lift* lift, Claw* claw);
     /**
      * Hands control over to a class which will control the robot
      * this can be things such as autonomous and drivercontrol
@@ -57,6 +56,22 @@ class Robot
      * @returns the claw system
      */
     Claw* getClaw() { return claw;}
+    
+    /**
+     * Gets the drivetrain object from the robot
+     *
+     * @returns the instance of drivetrain that the robot
+     * owns and controls.
+     */
+    DriveTrain* getDriveTrain() { return driveTrain; }
+
+    /**
+     * returns the controller used to control the robot
+     *
+     * @returns the controller used to control the robot
+     */
+    vex::controller* getController() { return robotController; }
+
     /**
     * returns the control scheme
     * @returns the control scheme
@@ -70,29 +85,5 @@ class Robot
      *
      * @returns true if the subsystems are ready for competition, else false
      */
-    bool areSubsystemsReady(const char* callerFunctionName)
-    {
-      bool liftReady = false;
-      bool driveTrainReady = false;
-      bool clawReady = false;
-      
-      if (lift != nullptr)
-      {
-        if (lift->isReady(callerFunctionName))
-        {
-          liftReady = true;
-        }
-      }
-      if (driveTrain != nullptr)
-      {
-        driveTrainReady = true;
-      }
-      if (claw != nullptr)
-      {
-        clawReady = true;
-      }
-      return liftReady && driveTrainReady && clawReady;
-    }
+    bool areSubsystemsReady(const char* callerFunctionName);
 };
-
-#endif

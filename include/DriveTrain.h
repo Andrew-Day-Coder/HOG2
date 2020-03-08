@@ -1,5 +1,5 @@
-#ifndef DRIVETRAIN_H
-#define DRIVETRAIN_H
+#pragma once 
+
 #include <vector>
 #include "vex.h"
 
@@ -95,5 +95,3 @@ class DriveTrain
      */
     void pidTurn(TurningDirection td, double(*errorFunction)(void));
 };
-
-#endif

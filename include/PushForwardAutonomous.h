@@ -16,11 +16,9 @@ class PushForwardAutonomous : public Autonomous
     /**
      * Control the actual robot during autonomous
      *
-     * @param driveTrain the drivetrain for the robot
-     * @param lift the lift of the robot
-     * @param claw the claw of the robot
+     * @param robot the robot to be controlled during autonomous
      */
-    void control(DriveTrain* driveTrain, Lift* lift, Claw* claw);
+    void control(Robot* robot);
 };
 
 #endif
