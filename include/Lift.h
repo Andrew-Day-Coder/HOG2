@@ -95,33 +95,13 @@ class Lift
      */
     void findBottomByImpact();
     /**
-     * Associates a function that can tell when the lift
-     * when it has reached the bottom.
-     *
-     * @param bottomLimit - a function pointer to a function that can
-     * tell the code when it is at the bottom of the lift.
-     */
-    void attachIsAtBottomFunction(bool (*bottomLimit)(void));
-    /**
      * Function to be called on every tick of the lift for the lift
      */
     void update();
     /**
-     * A way to request if the lift has a way to tell if it
-     * can tell if it is at the bottom
-     *
-     * @returns true if lift can determine the bottom, else false
-     */
-    bool hasBottomFunction() { return isAtBottom != nullptr; }
-    /**
      * Zeroes the motor encoders
      */
     void zero();
-    /**
-     * Makes the lift attempt to find it's bottom, must
-     * have a "bottoming" function associated with it
-     */
-    void findBottom();
 
     /**
      * Holds the lift where it is
@@ -188,6 +168,7 @@ class Lift
      * @returns A string representing the target of the lift
      */
     std::string getTargetAsString();
+    bool isAtBottomMeasuredByTorque();
 };
 
 #endif

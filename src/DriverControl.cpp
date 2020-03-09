@@ -9,6 +9,7 @@ void DriverControl::manageSubSystems(Robot* robot)
 {
   if (robot->areSubsystemsReady(__PRETTY_FUNCTION__))
   {
+    /* MOVED TO CALLBACKS
     // manage the manual control of the lift
     if (robot->getController()->ButtonR1.pressing())
     {
@@ -23,13 +24,16 @@ void DriverControl::manageSubSystems(Robot* robot)
       // hold the lift in place if no buttons are held
       robot->getLift()->hold();
     }
+    */
     // update the lift
     robot->getLift()->update();
 
+    /* moved to callback
     // manage the manual control of the claw
     if (robot->getController()->ButtonA.pressing())
     {
       robot->getClaw()->squeeze();
     }
+    */
   }
 }

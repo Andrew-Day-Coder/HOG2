@@ -112,6 +112,10 @@ class Claw
      * @param value the power in percent the claw will attempt to squeeze with
      */
     void setSqueezePower(int8_t value) {squeezePower = value; }
+    /**
+     * Zeroes the motor's encoders on the claw
+     */
+     void zero();
 };
 
 #endif

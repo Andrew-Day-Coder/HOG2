@@ -1,3 +1,120 @@
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// leftBackMotor        motor         6               
+// leftFrontMotor       motor         19              
+// rightBackMotor       motor         5               
+// rightFrontMotor      motor         18              
+// leftClawMotor        motor         16              
+// leftLiftMotor        motor         8               
+// rightLiftMotor       motor         20              
+// TurningGyro          gyro          B               
+// rightClawMotor       motor         7               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// leftBackMotor        motor         6               
+// leftFrontMotor       motor         19              
+// rightBackMotor       motor         5               
+// rightFrontMotor      motor         18              
+// leftClawMotor        motor         16              
+// leftLiftMotor        motor         8               
+// rightLiftMotor       motor         20              
+// TurningGyro          gyro          B               
+// rightClawMotor       motor         7               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// leftBackMotor        motor         6               
+// leftFrontMotor       motor         19              
+// rightBackMotor       motor         5               
+// rightFrontMotor      motor         18              
+// leftClawMotor        motor         16              
+// leftLiftMotor        motor         8               
+// rightLiftMotor       motor         20              
+// TurningGyro          gyro          B               
+// rightClawMotor       motor         7               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// leftBackMotor        motor         6               
+// leftFrontMotor       motor         19              
+// rightBackMotor       motor         5               
+// rightFrontMotor      motor         18              
+// leftClawMotor        motor         16              
+// leftLiftMotor        motor         8               
+// rightLiftMotor       motor         20              
+// TurningGyro          gyro          B               
+// rightClawMotor       motor         7               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// leftBackMotor        motor         6               
+// leftFrontMotor       motor         19              
+// rightBackMotor       motor         5               
+// rightFrontMotor      motor         18              
+// leftClawMotor        motor         16              
+// leftLiftMotor        motor         8               
+// rightLiftMotor       motor         20              
+// TurningGyro          gyro          B               
+// rightClawMotor       motor         7               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// leftBackMotor        motor         6               
+// leftFrontMotor       motor         19              
+// rightBackMotor       motor         5               
+// rightFrontMotor      motor         18              
+// leftClawMotor        motor         16              
+// leftLiftMotor        motor         8               
+// rightLiftMotor       motor         20              
+// TurningGyro          gyro          B               
+// rightClawMotor       motor         7               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// leftBackMotor        motor         6               
+// leftFrontMotor       motor         19              
+// rightBackMotor       motor         5               
+// rightFrontMotor      motor         18              
+// leftClawMotor        motor         16              
+// leftLiftMotor        motor         8               
+// rightLiftMotor       motor         20              
+// TurningGyro          gyro          B               
+// rightClawMotor       motor         7               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// leftBackMotor        motor         6               
+// leftFrontMotor       motor         19              
+// rightBackMotor       motor         5               
+// rightFrontMotor      motor         18              
+// leftClawMotor        motor         16              
+// leftLiftMotor        motor         8               
+// rightLiftMotor       motor         20              
+// TurningGyro          gyro          B               
+// rightClawMotor       motor         7               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// leftBackMotor        motor         6               
+// leftFrontMotor       motor         19              
+// rightBackMotor       motor         5               
+// rightFrontMotor      motor         18              
+// leftClawMotor        motor         17              
+// leftLiftMotor        motor         8               
+// rightLiftMotor       motor         20              
+// TurningGyro          gyro          B               
+// rightClawMotor       motor         7               
+// ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
@@ -124,11 +241,13 @@
  *</ul>
  *
  */
-DriveTrain* driveTrain = new DriveTrain();
+
 Robot* robot;
 vex::controller* mainController = new vex::controller();
 vex::competition Competition;
 
+
+bool setup = false;
 
 void controllerConfig(void);
 void auton(void);
@@ -149,9 +268,9 @@ bool isLiftAtBottom(void)
 }
 void pre_auton(void)
 {
-
-  Logger::setLogLevel(ErrorLevel::WARNING);
+  Logger::setLogLevel(ErrorLevel::INFO);
   Logger::setOutputFile(stdout);
+
 
   // keep below line as the first line in program execution except for robot-config
   robot = new Robot(mainController, new DriveTrain(), new Lift(&leftLiftMotor, &rightLiftMotor), new Claw(&leftClawMotor, &rightClawMotor));
@@ -165,31 +284,38 @@ void pre_auton(void)
     robot->getDriveTrain()->addRightMotor(&rightFrontMotor);
 
     // define the claw
-    robot->getClaw()->setOpeningDegrees(225);
+    robot->getClaw()->setOpeningDegrees(190);
     robot->getClaw()->setSqueezePower(50);
     robot->getClaw()->setOpeningPower(100);
+    // zero the claw
+    robot->getClaw()->zero();
 
     //configure the lift
     robot->getLift()->setUserSpeed(50);
-    // to prevent the last two game malfunctions at Cape Qualifier 1st tournament, simply ***REMOVE** this line if the switch breaks
-    // this line will be removed soon
-    robot->getLift()->attachIsAtBottomFunction(isLiftAtBottom);
+    Logger::log(ErrorLevel::INFO, "Robot Subsystems Ready!!!\n");
   }
+  setup = true;
 }
 void drivercontrol(void)
 {
   // ensure null pointer error's don't happen
   if (robot == nullptr)
   {
-    //printf("[CRITICAL]: drivercontrol has malfunctioned, `robot` is nullptr, in main.cpp!drivercontrol, exiting");
-    Logger::log(ErrorLevel::CRITICAL, "driver control has malfunctioned, `robot` is nullptr, in %s, exiting", __PRETTY_FUNCTION__);
+    Logger::log(ErrorLevel::CRITICAL, "driver control has malfunctioned, `robot` is nullptr, in %s, exiting\n", __PRETTY_FUNCTION__);
     return;
   }
   // define the control standard for the robot
   robot->attachControlScheme(new AggressiveArcadeControl());
+  if (robot->areSubsystemsReady(__PRETTY_FUNCTION__))
+  {
+    robot->getLift()->findBottomByImpact();
+  }
 
+  Logger::log(ErrorLevel::INFO, "Successfully attached a control scheme!!!\n");
   // register callbacks
   controllerConfig();
+
+  Logger::log(ErrorLevel::INFO, "Successfully set up controller callbacks\n");
   while (true)
   {
     // send the control pulse to the subsystems
@@ -203,7 +329,7 @@ void auton(void)
   // ensure robot is not null
   if (robot == nullptr)
   {
-    printf("[CRITICAL]: Autonomous Game Mode has malfunctioned, `robot` is nullptr, in function main.cpp!auton, will probably be evident in drivercontrol\n");
+    Logger::log(ErrorLevel::CRITICAL, "Autonomous Game Mode has malfunctioned, `robot` is nullptr in %s\n", __PRETTY_FUNCTION__);
     return;
   }
   robot->attachControlScheme(new SquareAutonomous(&TurningGyro));
@@ -217,9 +343,9 @@ void controllerConfig(void)
   */
   if (robot == nullptr)
   {
-    printf("[CRITICAL]: `robot` is nullptr in main.cpp!controllerConfig, aborted config, robot uncontrollable");
+    Logger::log(ErrorLevel::CRITICAL, "`robot` is nullptr in main.cpp, %s\n", __PRETTY_FUNCTION__);
+    return;
   }
-
   if (robot->areSubsystemsReady(__PRETTY_FUNCTION__))
   {
     // register all of the callbacks for the robot
@@ -227,24 +353,33 @@ void controllerConfig(void)
     robot->getController()->ButtonA.pressed([](){robot->getClaw()->open();});
     robot->getController()->ButtonB.pressed([](){robot->getClaw()->release();});
     robot->getController()->ButtonX.pressed([](){robot->getClaw()->squeeze();});
+    robot->getController()->ButtonX.released([](){robot->getClaw()->release();});
 
     // register the lift callbacks
-    robot->getController()->ButtonUp.pressed([](){robot->getLift()->setTargetLocation(TARGET::LOW_TOWER);});
-    robot->getController()->ButtonLeft.pressed([](){robot->getLift()->setTargetLocation(TARGET::MEDIUM_TOWER);});
+    robot->getController()->ButtonUp.pressed([](){robot->getLift()->setTargetLocation(TARGET::MEDIUM_TOWER);});
+    robot->getController()->ButtonRight.pressed([](){robot->getLift()->setTargetLocation(TARGET::LOW_TOWER);});
     robot->getController()->ButtonDown.pressed([](){robot->getLift()->setTargetLocation(TARGET::BOTTOM);});
-    robot->getController()->ButtonRight.pressed([](){robot->getLift()->setTargetLocation(TARGET::ALLIANCE_TOWER);});
+    robot->getController()->ButtonLeft.pressed([](){robot->getLift()->setTargetLocation(TARGET::ALLIANCE_TOWER);});
+
+    robot->getController()->ButtonR1.pressed([](){robot->getLift()->up();});
+    robot->getController()->ButtonR2.pressed([](){robot->getLift()->down();});
+    robot->getController()->ButtonR1.released([](){robot->getLift()->hold();});
+    robot->getController()->ButtonR2.released([](){robot->getLift()->hold();});
   }
 }
 
 int main() {
+  printf("The program has called: \"%s\"\n", __PRETTY_FUNCTION__);
+  vex::this_thread::sleep_for(100);
   // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit(); // ADD NO CODE ABOVE THIS LINE!!!!
   
-  Competition.autonomous(auton);
-  Competition.drivercontrol(drivercontrol);
-
+  
   // pre-setup
   pre_auton();
+
+  Competition.autonomous(auton);
+  Competition.drivercontrol(drivercontrol);
 
   // keep the code alive, don't exit before program before competition interupts
   while(true)

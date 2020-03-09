@@ -1,4 +1,5 @@
 #include "Claw.h"
+#include "Logger.h"
 
 Claw::Claw(vex::motor* leftMtr, vex::motor* rightMtr)
 {
@@ -7,7 +8,7 @@ Claw::Claw(vex::motor* leftMtr, vex::motor* rightMtr)
 
   if (!isReady(__PRETTY_FUNCTION__))
   {
-    printf("Oops, invalid args passed to Claw::Claw, probably a motor issue!\n");
+    Logger::log(ErrorLevel::INFO, "Oops, invalid args passed to Claw::Claw, probably a motor issue!\n");
   }
   setOpeningPower(0);
   setSqueezePower(0);
@@ -42,35 +43,44 @@ void Claw::update()
 
 }
 
+void Claw::zero()
+{
+  if (isReady(__PRETTY_FUNCTION__))
+  {
+    leftMotor->resetRotation();
+    rightMotor->resetRotation();
+  }
+}
 bool Claw::isReady(const char* callerName)
 {
   bool isLeftMotorReady = true;
   bool isRightMotorReady = true;
   
   // check if the motors exist for the program
-  if (leftMotor != nullptr)
+  if (leftMotor == nullptr)
   {
-    printf("[CRITICAL]: `left motor` for the claw is nullptr in %s\n", callerName);
+    Logger::log(ErrorLevel::CRITICAL, "the `leftMotor` for the claw is nullpointer in %s\n", callerName);
     isLeftMotorReady = false;
   }
-  if (rightMotor != nullptr)
+  if (rightMotor == nullptr)
   {
-    printf("[CRITICAL]: `right motor` for the claw is nullptr in %s\n", callerName);
+    Logger::log(ErrorLevel::CRITICAL, "The `rightMotor` for the Claw is nullpointer in %s\n", callerName);
     isRightMotorReady = false;
   }
   // return early if either motor is uninstalled
   if (!isLeftMotorReady || !isRightMotorReady)
   {
+    Logger::log(ErrorLevel::WARNING, "The claw has encountered an error, will not be functional...\n");
     return false;
   }
   // warn if any motors are uninstalled by cut wire, wrong port, broken port, etc.
   if (!leftMotor->installed())
   {
-    printf("[WARNING]: `left motor` for the claw is UNINSTALLED in %s\n", callerName);
+    Logger::log(ErrorLevel::WARNING, "The `leftMotor` for the claw is UNINSTALLED in %s\n", callerName);
   }
   if (!rightMotor->installed())
   {
-    printf("[WARNING]: `right motor` for the claw is UNINSTALLED in %s\n", callerName);
+    Logger::log(ErrorLevel::WARNING, "The `rightMotor` for the claw is UNINSTALLED in %s\n", callerName);
   }
   return true;
 }

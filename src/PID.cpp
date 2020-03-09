@@ -1,9 +1,6 @@
 #include "PID.h"
 #include "Logger.h"
 
-// include for printf
-#include <stdio.h>
-
 PID::PID(double proportionConstant, double integralConstant, double derivativeConstant, double (*errorFunction)(void))
 {
   Kp = proportionConstant;
@@ -22,8 +19,8 @@ double PID::getValue()
 {
   if (errorFunction == nullptr)
   {
-    //printf("[WARNING]: PID Error function undefined, is disabled\n");
-    Logger::log(ErrorLevel::WARNING, "PID Error function is undefined in function \"%s\", disabling\n", __PRETTY_FUNCTION__)
+
+    Logger::log(ErrorLevel::WARNING, "PID Error function is undefined in function \"%s\", disabling\n", __PRETTY_FUNCTION__);
     return 0;
   }
   double error = errorFunction();

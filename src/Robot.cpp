@@ -19,7 +19,6 @@ ControlScheme* Robot::getControlScheme()
 {
   if (controlScheme == nullptr)
   {
-    //printf("[WARNING]: Control Scheme returned is nullptr in Robot::getControlScheme\n");
     Logger::log(ErrorLevel::WARNING, "Control Scheme is nullptr in %s\n", __PRETTY_FUNCTION__);
   }
   return controlScheme;
@@ -83,10 +82,7 @@ bool Robot::areSubsystemsReady(const char *callerFunctionName)
 
   if (getController() != nullptr)
   {
-    if (getController()->installed())
-    {
       controllerReady = true;
-    }
   } else
   {
     Logger::log(ErrorLevel::INFO, "The Robot's controller is nullptr in method %s when called by method %s\n", __PRETTY_FUNCTION__, callerFunctionName);

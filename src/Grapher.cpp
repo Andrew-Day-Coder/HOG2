@@ -1,4 +1,5 @@
 #include "Grapher.h"
+#include "Logger.h"
 
 Grapher::Grapher(int xMin, int xMax, int yMin, int yMax){
   this->xMin = xMin;
@@ -29,12 +30,12 @@ void Grapher::graph(vex::brain::lcd* lcd)
 {
   if (xCoords.size() != yCoords.size())
   {
-    printf("[Warning]: mismatch length between xCoords, and yCoords in Grapher, graphing disabled\n");
+    Logger::log(ErrorLevel::WARNING, "Mismatch length between xCoords and yCoords in %s graphing disabled", __PRETTY_FUNCTION__);
     return;
   }
   if (lcd == nullptr)
   {
-    printf("[Warning]: lcd is nullptr in grapher, graphing disabled\n");
+    Logger::log(ErrorLevel::WARNING, "lcd is nullptr in \"%s\" graphing disabled", __PRETTY_FUNCTION__);
     return;
   }
   
@@ -69,7 +70,7 @@ void Grapher::graphWithAxis(vex::brain::lcd* lcd)
 {
   if (lcd == nullptr)
   {
-    printf("[WARNING]: lcd is nullptr when passed to Grapher::graphWithAxis, graphing disabled\n");
+    Logger::log(ErrorLevel::WARNING, "lcd is nullptr in \"%s\", graphing disabled");
     return;
   }
   lcd->setPenColor("#22CC22");

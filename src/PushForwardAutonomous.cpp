@@ -9,7 +9,7 @@ void PushForwardAutonomous::control(Robot* robot)
 {
   if (robot->areSubsystemsReady(__PRETTY_FUNCTION__))
   {
-    robot->getLift()->findBottom();
+    robot->getLift()->findBottomByImpact();
     robot->getDriveTrain()->powerBase(75);
     vex::this_thread::sleep_for(2000);
     robot->getDriveTrain()->powerBase(-75);

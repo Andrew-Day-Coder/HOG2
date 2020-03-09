@@ -7,7 +7,9 @@
 #include "Logger.h"
 #include "PID.h"
 
-DriveTrain::DriveTrain(void){}
+DriveTrain::DriveTrain(void){
+  printf("The program has called: \"%s\"\n", __PRETTY_FUNCTION__);
+}
 DriveTrain::~DriveTrain()
 {
   if (deleteMotorsOnDestruction)
@@ -38,7 +40,6 @@ void DriveTrain::addMotorToList(std::vector<vex::motor*>* list, vex::motor* mtr)
 {
   if (list == nullptr)
   {
-    //printf("Error `list` is nullptr in DriveTrain::addMotorToList\n");
     Logger::log(ErrorLevel::WARNING, "`list` is nullptr in %s\n, could be an indication of an upcoming segfault", __PRETTY_FUNCTION__);
     return;
   }
@@ -51,7 +52,6 @@ void DriveTrain::addLeftMotor(vex::motor* mtr)
     DriveTrain::addMotorToList(&leftMotors, mtr);
   }
   else {
-    //printf("[WARNING]: passed `mtr` as nullptr to DriveTrain::addLeftMotor, could lead to SEGFAULT\n");
     Logger::log(ErrorLevel::WARNING, "`mtr` is nullptr in function \"%s\"", __PRETTY_FUNCTION__);
   }
 }
@@ -62,7 +62,6 @@ void DriveTrain::addRightMotor(vex::motor* mtr)
     DriveTrain::addMotorToList(&rightMotors, mtr);
   } else
   {
-    //printf("[WARNING]: passed `mtr` as nullptr to DriveTrain::addRightMotor, could lead to SEGFAULT\n");
     Logger::log(ErrorLevel::WARNING, "`mtr` is nullptr in function \"%s\"", __PRETTY_FUNCTION__);
   }
 }

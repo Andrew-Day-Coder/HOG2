@@ -86,6 +86,7 @@ class Logger
         fputs("[  INFO  ]: ", output);
         vfprintf(output, msg, arg);
       }
+      fflush(output);
       va_end(arg);
     }
 };

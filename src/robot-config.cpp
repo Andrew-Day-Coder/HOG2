@@ -12,11 +12,11 @@ motor leftBackMotor = motor(PORT6, ratio36_1, false);
 motor leftFrontMotor = motor(PORT19, ratio18_1, false);
 motor rightBackMotor = motor(PORT5, ratio18_1, true);
 motor rightFrontMotor = motor(PORT18, ratio18_1, true);
-motor leftClawMotor = motor(PORT17, ratio36_1, false);
+motor leftClawMotor = motor(PORT16, ratio18_1, false);
 motor leftLiftMotor = motor(PORT8, ratio18_1, true);
 motor rightLiftMotor = motor(PORT20, ratio18_1, false);
 gyro TurningGyro = gyro(Brain.ThreeWirePort.B);
-motor rightClawMotor = motor(PORT11, ratio18_1, true);
+motor rightClawMotor = motor(PORT7, ratio18_1, true);
 
 // VEXcode generated functions
 
